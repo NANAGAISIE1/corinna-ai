@@ -1,10 +1,19 @@
-import { authMiddleware } from '@clerk/nextjs'
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default authMiddleware({
-  publicRoutes: ['/', '/auth(.*)', '/portal(.*)', '/images(.*)'],
-  ignoredRoutes: ['/chatbot'],
-})
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/auth(.*)",
+  "/portal(.*)",
+  "/images(.*)",
+]);
+const isIgnoredRoutes = createRouteMatcher(["/chatbot"]);
+
+export default clerkMiddleware((auth, request) => {
+  // if (!isPublicRoute(request) || !isIgnoredRoutes(request)) {
+  //   auth().protect();
+  // }
+});
 
 export const config = {
-  matcher: ['/((?!.+.[w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
-}
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+};
